@@ -1,1 +1,1 @@
-main = print $ sum . filter ((==0) . flip . rem 3) $ [1..999]
+main = print $ sum $ filter ((==0) . (`mod` 3)) $ [1..999]
