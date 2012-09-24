@@ -1,5 +1,6 @@
 import Data.List
 import Data.Maybe
+import Data.Ord
 
 -- The usual prime stuffs
 
@@ -11,11 +12,9 @@ primes = takeWhile (<10000) . dropWhile (<1000) $ sieve [2..]
 
 toDigits = sort . map (`mod` 10) . takeWhile (>0) . iterate (`div` 10)
 
-compareBy f x y = compare (f x) (f y)
-
 groupSort f = groupBy (\x y -> f x y == EQ) . sortBy f
 
-groupByDigits = groupSort (compareBy toDigits)
+groupByDigits = groupSort (comparing toDigits)
 
 -- Extract an arithmetic sequence of 3 elems out of a list
 
