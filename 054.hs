@@ -23,22 +23,23 @@ sortCards :: [Card] -> [Card]
 sortCards = concat . sortBy (flip (comparing length)) . group . sortBy (flip compare)
 
 level :: [Card] -> Int
-level a = 10 - fromJust (elemIndex True (map ($ a) levels)) where
+level a = 10 - fromJust (elemIndex True levels) where
     levels = [ isRoyalFlush, isStraightFlush, isFourOfAKind, isFullHouse, isFlush
-             , isStraight, isThreeOfAKind, isTwoPairs, isOnePair, isHighCard ]
-    isRoyalFlush a = isFlush a && isStraight a && (rank (head a) == 14)
-    isStraightFlush a = isFlush a && isStraight a
-    isFourOfAKind = (== 4) . length . head . group
-    isFullHouse a = (length (head b) == 3) && (length (last b) == 2) where b = group a
-    isFlush = (== 1) . length . groupBy (\p q -> suit p == suit q)
-    isStraight a = a == take 5 (iterate (\(Card r s) -> Card (r - 1) s) (head a))
-    isThreeOfAKind = (== 3) . length . head . group
-    isTwoPairs a = (length (head b) == 2) && (length (b !! 1) == 2) where b = group a
-    isOnePair = (== 2) . length . head . group
-    isHighCard a = True
+             , isStraight, isThreeOfAKind, isTwoPairs, isOnePair, True ]
+    isRoyalFlush = isStraightFlush && rank (head a) == 14
+    isStraightFlush = isFlush && isStraight
+    isFourOfAKind = lenKind == 4
+    isFullHouse = isThreeOfAKind && length (b !! 1) == 2
+    isFlush = length (groupBy (\p q -> suit p == suit q) a) == 1
+    isStraight = c == take 5 (iterate (\x -> x - 1) (head c)) where c = map rank a
+    isThreeOfAKind = lenKind == 3
+    isTwoPairs = isOnePair && length (b !! 1) == 2
+    isOnePair = lenKind == 2
+    lenKind = length (head b)
+    b = group a
 
-score :: [Card] -> (Int, [Card])
-score a = (level b, b) where b = sortCards a
+score :: [Card] -> (Int, [Int])
+score a = (level b, map rank b) where b = sortCards a
 
 play :: [Card] -> [Card] -> Int
 play a b = if score a > score b then 1
