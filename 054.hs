@@ -42,7 +42,7 @@ score a = (level b, b) where b = sortCards a
 
 play :: [Card] -> [Card] -> Int
 play a b = if score a > score b then 1
-	                            else 0
+                                else 0
 
 main = readFile "poker.txt" >>= 
     print . sum . map (uncurry play . splitAt 5 . map readCard . words) . lines
