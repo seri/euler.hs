@@ -3,7 +3,7 @@
     - The last digit can only be 1, 3, 7, 9 so it doesn't belong to the mask.
     - The mask has a size of 3x. We will cheat and assume that it is indeed 3.
     - The smallest prime of the family will have a mask of 000, 111, or 222.
-    - We will cheat again and assume that family has no more than 6 digits.
+    - We will cheat again and assume that the family has no more than 6 digits.
     - The last cheat: all remaining digits of the answer != the repeated digit
 -}
 
