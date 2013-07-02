@@ -1,6 +1,7 @@
 import Data.List hiding (union)
 import Data.List.Ordered (union, minus)
 import Data.Ord
+import Data.Maybe
 
 import Control.Monad
 
@@ -15,20 +16,20 @@ isPrime n = all ((/= 0) . (mod n)) . takeWhile (\p -> p * p <= n) $ primes
 
 -- Calculate helpful boundaries
 
-maxSum = 10^6
+limit = 10^6
 
-myPrimes = takeWhile (< (div maxSum 21)) $ primes
+myPrimes = takeWhile (< (div limit 21)) $ primes
 
-maxLen = length . takeWhile (<= maxSum) . scanl1 (+) $ primes
+maxLen = length . takeWhile (<= limit) . scanl1 (+) $ primes
 
 -- Iterate from maxLen, find the first length that satisfies s
 
 findLocal ps n | length ps < n = Nothing
-			   | s > maxSum = Nothing
+			   | s > limit = Nothing
 			   | isPrime s = Just s
 			   | otherwise = findLocal (tail ps) n
 			   where s = sum . take n $ ps
 
 findGlobal ps = msum . map (findLocal ps) . iterate (\n -> n - 1) $ maxLen
 
-main = print . findGlobal $ myPrimes
+main = print . fromJust . findGlobal $ myPrimes
