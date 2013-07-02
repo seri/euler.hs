@@ -25,7 +25,7 @@ sortCards = concat . sortBy (flip (comparing length)) . group . sortBy (flip com
 level :: [Card] -> Int
 level a = 10 - fromJust (elemIndex True levels) where
     levels = [ isRoyalFlush, isStraightFlush, isFourOfAKind, isFullHouse, isFlush
-             , isStraight, isThreeOfAKind, isTwoPairs, isOnePair, True ]
+             , isStraight, isThreeOfAKind, isTwoPairs, isOnePair, isHighCard ]
     isRoyalFlush = isStraightFlush && rank (head a) == 14
     isStraightFlush = isFlush && isStraight
     isFourOfAKind = lenKind == 4
@@ -35,6 +35,7 @@ level a = 10 - fromJust (elemIndex True levels) where
     isThreeOfAKind = lenKind == 3
     isTwoPairs = isOnePair && length (b !! 1) == 2
     isOnePair = lenKind == 2
+    isHighCard = True
     lenKind = length (head b)
     b = group a
 
