@@ -25,10 +25,10 @@ maxLen = length . takeWhile (<= limit) . scanl1 (+) $ primes
 -- Iterate from maxLen, find the first length that satisfies s
 
 findLocal ps n | length ps < n = Nothing
-			   | s > limit = Nothing
-			   | isPrime s = Just s
-			   | otherwise = findLocal (tail ps) n
-			   where s = sum . take n $ ps
+               | s > limit = Nothing
+               | isPrime s = Just s
+               | otherwise = findLocal (tail ps) n
+               where s = sum . take n $ ps
 
 findGlobal ps = msum . map (findLocal ps) . iterate (\n -> n - 1) $ maxLen
 
