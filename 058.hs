@@ -26,8 +26,8 @@ search = length $ tail $ takeWhile isUncool $ scanl f (0, 0) spiral where
     isUncool (n, p) = p * 10 >= n
     f (n, p) xs = (n + 4, p + countPrimes xs)
 
--- Reap immense benefits
-
 sideLength cycleNumber = 1 + 2 * cycleNumber
+
+-- Reap immense benefits
 
 main = print $ sideLength search
