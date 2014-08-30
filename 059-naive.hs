@@ -1,4 +1,5 @@
--- My naive solution. It is verbose and inefficient but it works.
+-- My naive solution. It is verbose and inefficient but it works and it is
+-- certainly easy to understand.
 
 import Data.Char (toUpper, chr, ord)
 import Data.Bits (xor)
