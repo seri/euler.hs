@@ -32,13 +32,16 @@ solve message dict = head answers where
     sumAscii = sum . map ord
 
 
+surround :: String -> String
+surround s = concat [ "[", s, "]" ]
+
 buildDict :: FilePath -> IO Dictionary
 buildDict file = readFile file >>= return . Set.fromList . readWords where
-    readWords content = read content :: [String]
+    readWords content = read (surround content) :: [String]
 
 getMessage :: FilePath -> IO [Int]
 getMessage file = readFile file >>= return . readInts where
-    readInts content = read content :: [Int]
+    readInts content = read (surround content) :: [Int]
 
 main :: IO ()
 main = do
