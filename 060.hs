@@ -20,7 +20,7 @@ isPrime n | n < limit = memo ! n
           | otherwise = isPrime' n where 
     memo = listArray (1, limit) (repeat False) //
            zip primes (repeat True)
-    isPrime' n = (all ((/= 0) . (n `mod`)) . takeWhile (< sqrt' n)) allPrimes
+    isPrime' n = (all ((/= 0) . (n `mod`)) . takeWhile (<= sqrt' n)) allPrimes
     sqrt' = ceiling . sqrt . fromIntegral
 
 isCool :: Int -> Int -> Bool
@@ -34,11 +34,11 @@ solve = head xs where
          , b <- dropWhile (<= a) primes
          , isCool a b
          , c <- dropWhile (<= b) primes
-         , (isCool a c) && (isCool b c)
+         , isCool a c && isCool b c
          , d <- dropWhile (<= c) primes
-         , (isCool a d) && (isCool b d) && (isCool c d) 
+         , isCool a d && isCool b d && isCool c d
          , e <- dropWhile (<= d) primes
-         , (isCool a e) && (isCool b e) && (isCool c e) && (isCool d e) ]
+         , isCool a e && isCool b e && isCool c e && isCool d e ]
 
 main :: IO ()
 main = print solve
