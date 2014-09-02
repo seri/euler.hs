@@ -1,4 +1,4 @@
--- TODO: A non brute force solution
+-- TODO: a more elegant approach
 
 import Data.List
 import Data.Array

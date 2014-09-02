@@ -4,3 +4,7 @@ Dependencies:
     
     $ cabal install data-ordlist
     $ cabal install digits
+
+For a list of TODO:
+
+    $ git grep TODO
