@@ -1,3 +1,5 @@
+-- TODO: optimize
+
 import Data.List hiding (union)
 import Data.List.Ordered (union, minus)
 
@@ -11,7 +13,7 @@ primes = 2: 3: minus odds sieve where
 
 isPrime n = all ((/= 0) . (mod n)) $ takeWhile (\p -> p * p <= n) primes
 
-countPrimes xs = length $ filter isPrime xs
+countPrimes = length . filter isPrime
 
 -- Generate the numbers in the diagonals
 
