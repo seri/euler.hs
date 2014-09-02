@@ -20,12 +20,10 @@ isPolygonal k = flip member (polygonals !! k)
 combine :: Int -> Int -> Int
 combine prefix suffix = prefix * 100 + suffix
 
-suffixes :: Int -> Int -> [Int]
-suffixes k prefix = filter ((isPolygonal k) . (combine prefix)) [10..99]
-
 suffixArr :: Array (Int, Int) [Int] 
 suffixArr = listArray ((0, 10), (5, 99)) (map (uncurry suffixes) indices) where
     indices = [ (k, prefix) | k <- [0..5], prefix <- [10..99] ]
+    suffixes k prefix = filter ((isPolygonal k) . (combine prefix)) [10..99]
 
 search :: Int -> [Int] -> Int -> Maybe [Int]
 search first [k] prev = if isPolygonal k (combine prev first) then Just [prev]
