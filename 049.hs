@@ -17,17 +17,12 @@ groupByDigits :: [Int] -> [[Int]]
 groupByDigits = groupSort (comparing toDigits) where
     toDigits = sort . (digits 10)
 
-isHomogeneous :: Eq a => [a] -> Bool
-isHomogeneous xs = if null xs then False else all (== head xs) (tail xs)
-
-isArith :: [Int] -> Bool
-isArith xs = isHomogeneous (zipWith (-) (tail xs) (init xs))
-
 findArith :: [Int] -> Maybe [Int]
-findArith xs = find isArith [ [x, y, z] | x <- xs
-                                        , x /= 1487
-                                        , y <- xs, y > x 
-                                        , z <- xs, z > y ]
+findArith xs = listToMaybe [ [x, y, z] | x <- xs
+                                       , x /= 1487
+                                       , y <- xs, y > x 
+                                       , z <- xs, z > y
+                                       , z - y == y - x ]
 
 solve :: Maybe String
 solve = fmap (concatMap show) ((msum . map findArith . groupByDigits) primes)
