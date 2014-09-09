@@ -1,6 +1,3 @@
--- we reduce the problem into finding the list of 6 two-digit numbers such that
--- any two consecutive elements when concatenated yields a distinct polygonal
-
 import Data.List
 import Data.List.Ordered (member)
 import Data.Array
@@ -43,3 +40,6 @@ solve = msum searchAll >>= return . sum . mergeBack where
 
 main :: IO ()
 main = print solve
+
+-- we reduce the problem into finding the list of 6 two-digit numbers such that
+-- any two consecutive elements when concatenated yields a distinct polygonal
