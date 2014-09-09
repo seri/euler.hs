@@ -46,5 +46,6 @@ play :: [Card] -> [Card] -> Int
 play a b = if score a > score b then 1
                                 else 0
 
+main :: IO ()
 main = readFile "054.in" >>= print . sum .
        map (uncurry play . splitAt 5 . map readCard . words) . lines
