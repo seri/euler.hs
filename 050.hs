@@ -1,35 +1,38 @@
-import Data.List hiding (union)
-import Data.List.Ordered (union, minus)
 import Data.Ord
 import Data.Maybe
-
+import Data.List
+import qualified Data.List.Ordered as OL
 import Control.Monad
 
--- Boring prime stuff
+allPrimes :: Integral a => [a]
+allPrimes = 2: 3: OL.minus [5, 7..] sieve where
+    sieve = (foldr safeUnion [] . map skipList . tail) allPrimes
+    skipList p = iterate (+ (p + p)) (p * p)
+    safeUnion (x:xs) ys = x : OL.union xs ys
 
-primes = 2: 3: minus [5, 7..] sieve where
-    sieve = foldr union' [] . map mults . tail $ primes
-    mults p = iterate (+ (2 * p)) $ p * p
-    union' (x:xs) ys = x: union xs ys
+isPrime :: Int -> Bool
+isPrime n = (all ((/= 0) . (mod n)) . takeWhile (<= sqrt' n)) allPrimes where
+    sqrt' = round . sqrt . fromIntegral
 
-isPrime n = all ((/= 0) . (mod n)) . takeWhile (\p -> p * p <= n) $ primes
-
--- Calculate helpful boundaries
-
+limit :: Int
 limit = 10^6
 
-myPrimes = takeWhile (< (div limit 21)) $ primes
+primes :: [Int]
+primes = (takeWhile (< limit `div` 21)) allPrimes
 
-maxLen = length . takeWhile (<= limit) . scanl1 (+) $ primes
+maxLen :: Int
+maxLen = (length . takeWhile (<= limit) . scanl1 (+))  allPrimes
 
--- Iterate from maxLen, find the first length that satisfies s
-
+findLocal :: [Int] -> Int -> Maybe Int
 findLocal ps n | length ps < n = Nothing
                | s > limit = Nothing
                | isPrime s = Just s
                | otherwise = findLocal (tail ps) n
-               where s = sum . take n $ ps
+    where s = sum (take n ps)
 
-findGlobal ps = msum . map (findLocal ps) . iterate (\n -> n - 1) $ maxLen
+findGlobal :: [Int] -> Maybe Int
+findGlobal ps = (msum . map (findLocal ps) . iterate decrement) maxLen where
+    decrement n = n - 1
 
-main = print . fromJust . findGlobal $ myPrimes
+main :: IO ()
+main = (print . findGlobal) primes
