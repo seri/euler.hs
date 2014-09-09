@@ -1,9 +1,8 @@
--- TODO: a more elegant approach
-
 import Data.List
 import Data.Array
 import qualified Data.List.Ordered as OL
 
+limit :: Int
 limit = 10000
 
 allPrimes :: [Int]
@@ -15,13 +14,18 @@ allPrimes = 2: 3: OL.minus [5, 7..] sieve where
 primes :: [Int]
 primes = takeWhile (< limit) allPrimes
 
-isPrime :: Int -> Bool
-isPrime n | n < limit = memo ! n
-          | otherwise = isPrime' n where 
-    memo = listArray (1, limit) (repeat False) //
-           zip primes (repeat True)
-    isPrime' n = (all ((/= 0) . (n `mod`)) . takeWhile (<= sqrt' n)) allPrimes
-    sqrt' = ceiling . sqrt . fromIntegral
+isPrimeCached :: Int -> Bool
+isPrimeCached = (arr !) where
+    arr = listArray (0, limit) (repeat False) //
+          zip primes (repeat True)
+
+isPrimeUncached :: Int -> Bool
+isPrimeUncached n = (all ((/= 0) . (mod n)) . takeWhile (<= sqrt' n)) primes where
+    sqrt' = round . sqrt . fromIntegral
+
+isPrime :: Int -> Bool    
+isPrime n = if n <= limit then isPrimeCached n
+                          else isPrimeUncached n
 
 isCool :: Int -> Int -> Bool
 isCool p q = isPrime (combine p q) && isPrime (combine q p) where
@@ -42,3 +46,5 @@ solve = head xs where
 
 main :: IO ()
 main = print solve
+
+-- TODO: optimize and/or prettify
