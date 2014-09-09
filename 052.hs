@@ -1,8 +1,11 @@
 import Data.List
 import Data.Digits
 
-isSame xs = xs == replicate (length xs) (head xs) 
+identical :: Eq a => [a] -> Bool
+identical xs = if null xs then False else all (== head xs) (tail xs)
 
-isCool n = isSame . map (sort . (digits 10) . (* n)) $ [1..6]
+isCool :: Int -> Bool
+isCool n = (identical . map (sort . digits 10) . take 6 . iterate (+ n)) n
 
-main = print . head . filter isCool . iterate (+ 3) $ 10000
+main :: IO ()
+main = (print . find isCool . iterate (+ 1)) 10000
