@@ -1,6 +1,3 @@
--- Haskell implementation of the elegant approach described here:
--- http://www.mathblog.dk/project-euler-59-xor-encryption/
-
 import Data.Char
 import Data.Bits
 import Data.Ord
@@ -29,3 +26,6 @@ getMessage file = readFile file >>= return . readInts where
 
 main :: IO ()
 main = getMessage "059.in" >>= print . solve
+
+-- It used frequency analysis. Read more at:
+-- http://www.mathblog.dk/project-euler-59-xor-encryption/
