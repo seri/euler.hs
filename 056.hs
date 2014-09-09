@@ -1,5 +1,6 @@
 import Data.Digits
 
-range = [1..99]
-
-main = print $ maximum [ sum (digits 10 (a ^ b)) | a <- range, b <- range ]
+main :: IO ()
+main = (print . maximum) [ sum (digits 10 (a ^ b)) | a <- domain
+                                                   , b <- domain ] where
+    domain = [1 .. 99]
