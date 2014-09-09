@@ -1,25 +1,28 @@
 import Data.Array
-import Data.List hiding (union)
-import Data.List.Ordered (union, minus)
+import Data.List
+import qualified Data.List.Ordered as OL
 
-primes = 2: 3: minus [5, 7..] sieve where
-    sieve = foldr union' [] $ map mults $ tail primes
-    mults p = iterate (+ (2 * p)) (p * p)
-    union' (x:xs) ys = x: union xs ys
+allPrimes :: Integral a => [a]
+allPrimes = 2: 3: OL.minus [5, 7..] sieve where
+    sieve = (foldr safeUnion [] . map skipList . tail) allPrimes
+    skipList p = iterate (+ (p + p)) (p * p)
+    safeUnion (x:xs) ys = x : OL.union xs ys
 
-limit = 10^6
+limit :: Int
+limit = 10 ^ 6
 
-goodPrimes = takeWhile (< limit) primes
+primes :: [Int]
+primes = takeWhile (< limit) allPrimes
 
-primeMemo = listArray (0, limit) (repeat False) //
-            zip goodPrimes (repeat True)
+isPrime :: Int -> Bool
+isPrime = (arr !) where
+    arr = listArray (0, limit) (repeat False) //
+          zip primes (repeat True)
 
-rotations xs = map rotate [1..(length xs)] where
-    rotate n = right ++ left where (left, right) = splitAt n xs
+isCircular :: Int -> Bool
+isCircular = all (isPrime . read) . init . rotations . show where
+    rotations xs = map (rotate xs) [1 .. length xs]
+    rotate xs n = right ++ left where (left, right) = splitAt n xs
 
-isCircular n = all ((primeMemo !) . read) $ init $ rotations $ show n
-
-circulars = filter isCircular goodPrimes
-
-main = print $ length circulars
-
+main :: IO ()
+main = (print . length . filter isCircular) primes

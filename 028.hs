@@ -1,5 +1,9 @@
-makeSpiral n = take 4 (iterate (\x -> x - (n - 1)) (n * n))
+makeSpiral :: Int -> [Int]
+makeSpiral n = (take 4 . iterate f) (n * n) where
+    f x = x - (n - 1)
 
-sumSpiral n = 1 + sum (concatMap makeSpiral [3, 5..n])
+sumSpiral :: Int -> Int
+sumSpiral n = 1 + sum (concatMap makeSpiral [3, 5 .. n])
 
+main :: IO ()
 main = print (sumSpiral 1001)

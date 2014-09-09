@@ -1,17 +1,21 @@
-import Data.List hiding (union)
-import Data.List.Ordered (union, minus)
+import Data.List
+import qualified Data.List.Ordered as OL
 
-primes = 2: 3: minus [5, 7..] sieve where
-    sieve = foldr union' [] $ map mults $ tail primes
-    mults p = iterate (+ (2 * p)) (p * p)
-    union' (x:xs) ys = x: union xs ys
+primes :: Integral a => [a]
+primes = 2: 3: OL.minus [5, 7..] sieve where
+    sieve = (foldr safeUnion [] . map skipList . tail) primes
+    skipList p = iterate (+ (p + p)) (p * p)
+    safeUnion (x:xs) ys = x : OL.union xs ys
 
+factorize :: [Int] -> Int -> [Int]
 factorize ps@(p:pr) n | n <= 1 = []
                       | p * p > n = [n]
                       | r == 0 = p : factorize ps q
                       | otherwise = factorize pr n
-                      where (q, r) = divMod n p
+                      where (q, r) = n `divMod` p
 
-isOk = all $ (==4) . length . group . factorize primes
+isCool :: [Int] -> Bool
+isCool = all ((== 4) . length . group . factorize primes)
 
-main = print $ head $ head $ filter isOk $ map (take 4 . iterate (+1)) [2..]
+main :: IO ()
+main = (print . head . head . filter isCool . map (take 4 . iterate (+ 1))) [2 ..]

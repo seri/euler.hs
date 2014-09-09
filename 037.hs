@@ -1,25 +1,36 @@
 import Data.Array
-import Data.List hiding (union)
-import Data.List.Ordered (union, minus)
+import Data.List
+import qualified Data.List.Ordered as OL
 
-primes = 2: 3: minus [5, 7..] sieve where
-    sieve = foldr union' [] $ map mults $ tail primes
-    mults p = iterate (+ (2 * p)) $ p * p
-    union' (x:xs) ys = x: union xs ys
+allPrimes :: Integral a => [a]
+allPrimes = 2: 3: OL.minus [5, 7..] sieve where
+    sieve = (foldr safeUnion [] . map skipList . tail) allPrimes
+    skipList p = iterate (+ (p + p)) (p * p)
+    safeUnion (x:xs) ys = x : OL.union xs ys
 
-limit = 10^6
+limit :: Int
+limit = 10 ^ 6
 
-primeArr = listArray (0, limit) (repeat False) //
-           zip (takeWhile (< limit) primes) (repeat True)
+primes :: [Int]
+primes = takeWhile (< limit) allPrimes
 
-isPrime n | n <= limit = primeArr ! n
-          | otherwise = all ((/= 0) . (mod n)) $ takeWhile (<= m) primes
-          where m = round $ sqrt $ fromIntegral n
+isPrimeCached :: Int -> Bool
+isPrimeCached = (arr !) where
+    arr = listArray (0, limit) (repeat False) //
+          zip primes (repeat True)
 
-splitAll xs = map ((flip splitAt) xs) [1..(length xs - 1)]
+isPrimeUncached :: Int -> Bool
+isPrimeUncached n = (all ((/= 0) . (mod n)) . takeWhile (<= sqrt' n)) primes where
+    sqrt' = round . sqrt . fromIntegral
+
+isPrime :: Int -> Bool    
+isPrime n = if n <= limit then isPrimeCached n
+                          else isPrimeUncached n
 
 isTruncatable :: Int -> Bool
-isTruncatable = all f . splitAll . show where
-    f (x, y) = (isPrime (read x)) && (isPrime (read y))
+isTruncatable = all isCool . splitAll . show where
+    isCool (x, y) = (isPrime (read x)) && (isPrime (read y))
+    splitAll xs = map ((flip splitAt) xs) [1 .. (length xs - 1)]
 
-main = print $ sum $ take 11 $ filter isTruncatable $ drop 4 primes
+main :: IO ()
+main = (print . sum . take 11 . filter isTruncatable . drop 4) primes

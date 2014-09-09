@@ -1,1 +1,2 @@
-main = print $ foldl1 lcm [1..20]
+main :: IO ()
+main = (print . foldl1 lcm) [1 .. 20]

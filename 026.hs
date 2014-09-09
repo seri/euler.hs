@@ -1,16 +1,19 @@
--- Reading: http://www.lrz.de/~hr/numb/period.html
-
 import Data.List
 import Data.Ord
 
-simplify n | mod n 2 == 0 = simplify $ div n 2
-           | mod n 5 == 0 = simplify $ div n 5
+simplify :: Integer -> Integer
+simplify n | n `mod` 2 == 0 = simplify (n `div` 2)
+           | n `mod` 5 == 0 = simplify (n `div` 5)
            | otherwise = n
 
-nines = map (flip (-) 1) . iterate (*10) $ 10
+nines :: [Integer]
+nines = map (flip (-) 1) (iterate (* 10) 10)
 
-cyclen n = (+1) . length . takeWhile ((/=0) . (flip mod $ simplify n)) $ nines
+cyclen :: Integer -> Int
+cyclen n = ((+ 1) . length . takeWhile ((/= 0) . (flip mod (simplify n)))) nines
 
-zipMap f xs = zip xs . map f $ xs
+zipMap :: (a -> b) -> [a] -> [(a, b)]
+zipMap f xs = (zip xs . map f) xs
 
-main = print $ fst . maximumBy (comparing snd) . zipMap cyclen $ [3..999]
+main :: IO ()
+main = (print . fst . maximumBy (comparing snd) . zipMap cyclen) [3 .. 999]

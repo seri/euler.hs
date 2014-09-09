@@ -1,3 +1,4 @@
 import Data.Char
 
-main = print . sum . map digitToInt . show . product $ [1..100]
+main :: IO ()
+main = (print . sum . map digitToInt . show . product) [1 .. 100]

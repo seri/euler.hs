@@ -1,11 +1,5 @@
-import Data.Array
-import Data.List
-import Data.Char
+import Data.Digits
 
-factorial = listArray (0, 9) (1 : scanl1 (*) [1..])
-
-isCurious n = sum (map ((factorial!) . digitToInt) (show n)) == n
-
-curious = filter isCurious [10..(7 * factorial!9)]
-
-main = print $ sum curious
+main = (print . sum . filter isCurious) [10 .. (7 * factorial 9)] where
+    isCurious n = ((== n) . sum . map factorial . digits 10) n
+    factorial x = product [1 .. x]

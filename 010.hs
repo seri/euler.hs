@@ -1,10 +1,16 @@
-import Data.List.Ordered (minus, union)
+import qualified Data.List.Ordered as OL
 
-primes = 2: 3: minus [5, 7..] sieve where
-    sieve = foldr union' [] (map mults (tail primes))
-    mults p = iterate (+ (2 * p)) (p * p)
-    union' (q:qs) xs = q : union qs xs
+-- A faster prime sieve
+-- ====================
 
-solve = sum $ takeWhile (<20) primes
+primes :: Integral a => [a]
+primes = 2: 3: OL.minus [5, 7..] sieve where
+    sieve = (foldr safeUnion [] . map skipList . tail) primes
+    skipList p = iterate (+ (p + p)) (p * p)
+    safeUnion (x:xs) ys = x : OL.union xs ys
 
-main = print solve
+main :: IO ()
+main = (print . sum . takeWhile (< 2000000)) primes
+
+-- Read more:
+-- http://www.haskell.org/haskellwiki/Prime_numbers#Sieve_of_Eratosthenes

@@ -18,4 +18,4 @@ search :: Integer -> Maybe String
 search = liftM (snd . fst) . M.minView . M.filter ((== 5) . fst) . buildCounter
 
 main :: IO ()
-main = (print . search . read . flip replicate '9') 12 
+main = (print . search . read . flip replicate '9') 12

@@ -1,10 +1,14 @@
 import Numeric
 import Data.Char
 
-palin xs = xs == reverse xs
+isPalindrome :: Eq a => [a] -> Bool
+isPalindrome xs = xs == reverse xs
 
-palinBase base n = palin $ showIntAtBase base intToDigit n ""
+isCool :: Int -> Int -> Bool
+isCool base n = isPalindrome (showIntAtBase base intToDigit n "")
 
-satisfy n = palinBase 10 n && palinBase 2 n
+satisfy :: Int -> Bool
+satisfy n = isCool 10 n && isCool 2 n
 
-main = print $ sum $ filter satisfy [1..999999]
+main :: IO ()
+main = (print . sum . filter satisfy) [1 .. 999999]

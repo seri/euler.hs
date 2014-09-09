@@ -13,4 +13,5 @@ sum99 = sum19 + sum9 * 8 + sumty * 10
 sum999 = sum99 * 10 + sum9 * 100 + hundred * 900 + andd * 891
 sum1000 = sum999 + onethousand
 
+main :: IO ()
 main = print sum1000

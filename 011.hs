@@ -20,4 +20,5 @@ solve grid = maximum [ product xs | i <- indices grid
                                   , all (inRange (bounds grid)) is
                                   , let xs = map (grid !) is ]
 
+main :: IO ()
 main = readFile "011.in" >>= print . solve . parseInput

@@ -1,5 +1,7 @@
-import Data.Char
+import Data.Digits
 
-isSum n = n == (sum $ map ((^5) . digitToInt) $ show n)
+isSum :: Int -> Bool
+isSum n = ((== n) . sum . map (^ 5) . digits 10) n
 
-main = print $ sum $ filter isSum [10..((9^5)*6)]
+main :: IO ()
+main = (print . sum . filter isSum) [10 .. ((9 ^ 5) * 6)]

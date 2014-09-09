@@ -1,8 +1,10 @@
-hexes = scanl (+) 1 diffs where
-    diffs = iterate (+ 4) 5
+hexagonals :: [Int]
+hexagonals = scanl (+) 1 diffs where diffs = iterate (+ 4) 5
 
-isPent n = x * x == y && mod (x + 1) 6 == 0 where
+isPentagon :: Int -> Bool
+isPentagon n = x * x == y && (x + 1) `mod` 6 == 0 where 
     y = 24 * n + 1
-    x = round $ sqrt $ fromIntegral y
+    x = (round . sqrt . fromIntegral) y
 
-main = print $ head $ filter isPent $ drop 143 hexes
+main :: IO ()
+main = (print . head . filter isPentagon . drop 143) hexagonals

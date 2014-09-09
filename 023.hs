@@ -1,26 +1,34 @@
 import Data.List
 import Data.Array
 
-primes = 2 : filter (null . tail . pfactors) [3,5..]
+primes :: [Int]
+primes = 2 : filter (null . tail . primeFactors) [3, 5 ..]
 
-pfactors = f primes
-    where f ps@(p:pr) n | p*p > n   = [n]
-                        | r == 0    = p : f ps q
-                        | otherwise = f pr n
-                        where (q, r) = divMod n p
+primeFactors :: Int -> [Int]
+primeFactors = factors primes where 
+    factors ps@(p:pr) n | p * p > n = [n]
+                        | r == 0 = p : factors ps q
+                        | otherwise = factors pr n
+                        where (q, r) = n `divMod` p
 
-aliquot 1 = 0 
-aliquot n = (product . map f . group . pfactors $ n) - n where 
-    f ps = div (p ^ (length ps + 1) - 1) (p - 1) where p = head ps
+aliquot :: Int -> Int
+aliquot 1 = 0
+aliquot n = ((product . map f . group . primeFactors) n) - n where 
+    f ps@(p:pr) = (p * product ps - 1) `div` (p - 1)
 
-abundant n = aliquot n > n
+numbers :: [Int]
+numbers = [1 .. 28123]
 
-lim = 28123
+isAbundant :: Int -> Bool
+isAbundant = (memo !) where
+    memo = (listArray (1, 28123) . map f) numbers
+    f n = aliquot n > n
 
-abundArray = listArray (1, lim) . map abundant $ [1..lim]
+abundants :: [Int]
+abundants = filter isAbundant numbers
 
-abundList = filter (abundArray !) [1..lim]
+isBad :: Int -> Bool
+isBad n = (any isAbundant . map (n -) . takeWhile (< n)) abundants
 
-bad n = any (abundArray !) . map (n -) . takeWhile (< n) $ abundList
-
-main = print . sum . filter (not . bad) $ [1..lim]
+main :: IO ()
+main = (print . sum . filter (not . isBad)) numbers

@@ -1,7 +1,7 @@
 import Data.Char
 
-list = concat $ map show [0..]
+digit :: Int -> Int
+digit = digitToInt . (list !!) where list = concatMap show [0 ..]
 
-digit = digitToInt . (list !!)
-
-main = print $ product $ map digit $ take 7 $ iterate (*10) 1
+main :: IO ()
+main = (print . product . map digit . take 7 . iterate (* 10)) 1

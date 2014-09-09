@@ -1,22 +1,25 @@
-{-# OPTIONS_GHC -O2 #-}
-
-import Data.List (maximumBy)
 import Data.Ord
-import Data.List.Ordered (minus, union)
+import Data.List
+import qualified Data.List.Ordered as OL
 
-primes = 2: 3: minus [5, 7..] sieve where
-    sieve = foldr union' [] (map mults (tail primes))
-    mults p = iterate (+ (2 * p)) (p * p)
-    union' (x:xs) ys = x: union xs ys
+primes :: Integral a => [a]
+primes = 2: 3: OL.minus [5, 7..] sieve where
+    sieve = (foldr safeUnion [] . map skipList . tail) primes
+    skipList p = iterate (+ (p + p)) (p * p)
+    safeUnion (x:xs) ys = x : OL.union xs ys
 
-isPrime n | n <= 1 = False
-          | otherwise = all ((/=0) . mod n) (takeWhile (\p -> p*p <= n) primes)
+isPrime :: Integral a => a -> Bool
+isPrime n | n > 1 = (all ((/= 0) . (mod n)) . takeWhile (<= sqrt' n)) primes 
+          | otherwise = False 
+    where sqrt' = ceiling . sqrt . fromIntegral
 
-primeLen a b = length . takeWhile isPrime . map formula $ [0..] where
-    formula n = n*n + a*n + b
+primeLen :: Int -> Int -> Int
+primeLen x y = (length . takeWhile isPrime . map f) [0 ..] where
+    f n = n * n + x * n + y
 
-main = print $ fst . maximumBy (comparing snd) $
-               [ (a*b, primeLen a b ) | a <- range
-                                      , b <- range
-                                      , isPrime b ] where
-    range = [-999..999]
+main :: IO ()
+main = (print . fst . maximumBy (comparing snd))
+    [ (x * y, primeLen x y ) | x <- domain
+                             , y <- domain
+                             , isPrime y ] where
+    domain = [-999 .. 999]

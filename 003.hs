@@ -1,11 +1,11 @@
-primes = 2 : filter ((==1) . length . primeFactors) [3, 5..]
+primes :: [Integer]
+primes = 2 : filter ((== 1) . length . primeFactors) [3, 5..]
 
-primeFactors n = factors n primes
+primeFactors :: Integer -> [Integer]
+primeFactors n = factors n primes where
+    factors n (p:ps) | p * p > n = [n]
+                     | n `mod` p == 0 = p : factors (n `div` p) ps
+                     | otherwise = factors n ps
 
-factors n (p:ps) | p*p > n = [n]
-                 | mod n p == 0 = p : factors (div n p) ps
-                 | otherwise = factors n ps
-
-solve = last . primeFactors
-
-main = print $ solve 600851475143
+main :: IO ()
+main = (print . last . primeFactors) 600851475143

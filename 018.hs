@@ -1,6 +1,7 @@
-solve = head $ foldr1 g tri where
+main :: IO ()
+main = (print . head . foldr1 g) tri where
     f x y z = x + max y z
-    g xs ys = zipWith3 f xs ys $ tail ys
+    g xs ys = (zipWith3 f xs ys . tail) ys
     tri = [[75],
           [95,64],
           [17,47,82],
@@ -16,5 +17,3 @@ solve = head $ foldr1 g tri where
           [91,71,52,38,17,14,91,43,58,50,27,29,48],
           [63,66,04,68,89,53,67,30,73,16,69,87,40,31],
           [04,62,98,27,23,09,70,98,73,93,38,53,60,04,23]]
-
-main = print solve

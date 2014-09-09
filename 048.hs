@@ -1,15 +1,18 @@
 import Data.List
 
+powMod :: Integer -> Integer -> Integer -> Integer
 powMod m x 0 = 1
-powMod m x 1 = mod x m
-powMod m x n = mod (((recur p) ^ 2) * (recur q)) m where
-    recur = powMod m x
-    (p, q) = divMod n 2
+powMod m x 1 = x `mod` m
+powMod m x n = (((go p) ^ 2) * (go q)) `mod` m where
+    (p, q) = n `divMod` 2
+    go = powMod m x
 
-sumMod m x y = mod (x + y) m
+sumMod :: Integer -> Integer -> Integer -> Integer
+sumMod m x y = (x + y) `mod` m
 
+modula :: Integer
 modula = 10^10
 
-result = foldl1 (sumMod modula) $ map (\x -> powMod modula x x) [1..1000]
-
-main = print result
+main :: IO ()
+main = (print . foldl1 (sumMod modula) . map f) [1..1000] where
+    f x = powMod modula x x
