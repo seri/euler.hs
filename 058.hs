@@ -1,36 +1,32 @@
--- TODO: optimize
+import Data.List
+import qualified Data.List.Ordered as OL
 
-import Data.List hiding (union)
-import Data.List.Ordered (union, minus)
-
--- Prime things here we go again
-
-primes = 2: 3: minus odds sieve where
-    odds = iterate (+ 2) 5
+primes :: Integral a => [a]
+primes = 2: 3: OL.minus [5, 7..] sieve where
     sieve = (foldr safeUnion [] . map skipList . tail) primes
-    skipList p = iterate (+ (2 * p)) (p * p)
-    safeUnion (x:xs) ys = x : union xs ys
+    skipList p = iterate (+ (p + p)) (p * p)
+    safeUnion (x:xs) ys = x : OL.union xs ys
 
+isPrime :: Int -> Bool
 isPrime n = (all ((/= 0) . (mod n)) . takeWhile (<= sqrt' n)) primes where
-    sqrt' = ceiling . sqrt . fromIntegral
+    sqrt' = round . sqrt . fromIntegral
 
+countPrimes :: [Int] -> Int
 countPrimes = length . filter isPrime
 
--- Generate the numbers in the diagonals
-
+nextCycle :: [Int] -> [Int]
 nextCycle [x1, x2, x3, x4] = (tail . take 5 . iterate (+ d)) x4 where 
     d = x4 - x3 + 2
 
+spiral :: [[Int]]
 spiral = iterate nextCycle [3, 5, 7, 9]
 
--- Search for the number of cycles needed to reach the required state
-
-search = (length . tail . takeWhile isUncool . scanl f (0, 0)) spiral where
+countCycles :: Int
+countCycles = (length . tail . takeWhile isUncool . scanl f (0, 0)) spiral where
     isUncool (n, p) = p * 10 >= n
     f (n, p) xs = (n + 4, p + countPrimes xs)
 
-sideLength cycleNumber = 1 + 2 * cycleNumber
+main :: IO ()
+main = print sideLength where sideLength = 1 + 2 * countCycles
 
--- Reap immense benefits
-
-main = print (sideLength search)
+-- TODO: optimize
