@@ -1,29 +1,36 @@
-import Data.List
-import Data.Maybe
 import Data.Ord
+import Data.List
+import Data.Digits
+import Data.Maybe
+import Control.Monad
 
--- The usual prime stuffs
-
+sieve :: [Int] -> [Int]
 sieve (x:xs) = x : sieve (filter ((/=0) . (`mod` x)) xs)
 
-primes = takeWhile (<10000) . dropWhile (<1000) $ sieve [2..]
+primes :: [Int]
+primes = (takeWhile (< 10000) . dropWhile (< 1000) . sieve) [2 ..]
 
--- Given a list of nums, group those which share the same digits
+groupSort :: (a -> a -> Ordering) -> [a] -> [[a]] 
+groupSort f = groupBy g . sortBy f where g x y = f x y == EQ
 
-toDigits = sort . map (`mod` 10) . takeWhile (>0) . iterate (`div` 10)
+groupByDigits :: [Int] -> [[Int]]
+groupByDigits = groupSort (comparing toDigits) where
+    toDigits = sort . (digits 10)
 
-groupSort f = groupBy (\x y -> f x y == EQ) . sortBy f
+isHomogeneous :: Eq a => [a] -> Bool
+isHomogeneous xs = if null xs then False else all (== head xs) (tail xs)
 
-groupByDigits = groupSort (comparing toDigits)
+isArith :: [Int] -> Bool
+isArith xs = isHomogeneous (zipWith (-) (tail xs) (init xs))
 
--- Extract an arithmetic sequence of 3 elems out of a list
+findArith :: [Int] -> Maybe [Int]
+findArith xs = find isArith [ [x, y, z] | x <- xs
+                                        , x /= 1487
+                                        , y <- xs, y > x 
+                                        , z <- xs, z > y ]
 
-getArith xs = find (\(x, y, z) -> x + z == y + y)
-              [ (x, y, z) | x <- xs , y <- xs, y > x , z <- xs, z > y ]
+solve :: Maybe String
+solve = fmap (concatMap show) ((msum . map findArith . groupByDigits) primes)
 
--- The rest is history
-
-result = map (\(x, y, z) -> show x ++ show y ++ show z) . map fromJust . 
-         filter isJust . map getArith . groupByDigits $ primes
-
-main = print result
+main :: IO ()
+main = print solve
