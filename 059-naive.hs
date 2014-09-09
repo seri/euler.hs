@@ -1,11 +1,8 @@
--- my naive solution is verbose and inefficient but well, it works
-
 import Data.Char (toUpper, chr, ord)
 import Data.Bits (xor)
 import qualified Data.Set as Set
 
 type Dictionary = Set.Set String
-
 
 decrypt :: [Int] -> [Int] -> String
 decrypt message key = zipWith convert message (cycle key) where
@@ -14,7 +11,6 @@ decrypt message key = zipWith convert message (cycle key) where
 generateKeys :: [[Int]]
 generateKeys = [ [x, y, z] | x <- range, y <- range, z <- range ] where
     range = [97..122]
-
 
 validate :: String -> Dictionary -> Bool
 validate message dict = (sanityCheck allWords) && (length invalids < 10) where
@@ -29,7 +25,6 @@ solve message dict = head answers where
                                 , let output = decrypt message key 
                                 , validate output dict ]
     sumAscii = sum . map ord
-
 
 surround :: String -> String
 surround s = concat [ "[", s, "]" ]
@@ -47,3 +42,5 @@ main = do
     dict <- buildDict "words.txt"
     message <- getMessage "059.in"
     print $ solve message dict
+    
+-- my naive solution is verbose and inefficient but well, it works
