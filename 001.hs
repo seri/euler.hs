@@ -1,2 +1,3 @@
 main :: IO ()
-main = (print . sum . filter ((==0) . (`mod` 3))) [1..999]
+main = (print . sum . filter isCool) [1..999] where
+    isCool n = (n `mod` 3 == 0) || (n `mod` 5 == 0)
