@@ -1,12 +1,9 @@
 import Data.Digits
 import Data.Ratio
 
-inverse :: Rational -> Rational
-inverse x = (denominator x) % (numerator x)
-
 series :: [Rational]
 series = iterate next (1 + (1 % 2)) where
-    next x = 1 + (inverse (1 + x))
+    next x = 1 + (1 / (1 + x))
 
 isCool :: Rational -> Bool
 isCool x = f (numerator x) > f (denominator x) where 
