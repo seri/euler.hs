@@ -13,4 +13,4 @@ euler = (2, concatMap surround (iterate (+ 2) 2)) where
     surround x = [1, x, 1]
 
 main :: IO ()
-main = (print . sum . digits 10 . numerator) (euler `approx` 100 )
+main = (print . sum . digits 10 . numerator) (euler `approx` 100)
